@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from musics.models import (
+from .models import (
     Author,
     Genre,
     Music

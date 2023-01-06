@@ -53,8 +53,14 @@ class Genre(AbstractModel):
         return self.title
 
 
+class MusicManager(models.Manager):
+    def get_all(self) -> models.QuerySet['Music']:
+        return Music.objects.all()
+
+
 class Music(AbstractModel):
     """Music model"""
+    objects = MusicManager()
 
     STATUS_PATTERN = [
         ('BR', 'Предрелиз'),
@@ -85,6 +91,7 @@ class Music(AbstractModel):
 
     genre = models.ManyToManyField(
         to='Genre',
+        related_name='genres',
         verbose_name='жанр'
     )
 
