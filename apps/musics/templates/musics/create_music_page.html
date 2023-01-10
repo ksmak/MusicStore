@@ -1,0 +1,20 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Page</title>
+    <link rel="stylesheet" href="{% static 'musics/css/style.css' %}">
+</head>
+<body>
+    <h1 class="title">Music Page</h1>
+    {% for item in items %}
+    <div class="card">
+        <h2>{{item.title}}</h2>
+        <p>{{item.author.user.username}}</p>
+        <p>{{item.genres}}</p>
+    </div>
+    {% endfor %}
+</body>
+</html>

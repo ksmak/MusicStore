@@ -1,0 +1,13 @@
+* {
+    padding: 0px;
+    margin: 0px;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: lightblue;
+}
+.title {
+    font-weight: 700;
+    font-size: 18pt;
+    color: blue;
+}
