@@ -21,6 +21,16 @@ SHELL_PLUS_PRE_IMPORTS = [
     ('json', ('loads', 'dumps'))
 ]
 IPYTHON_KERNEL_DISPLAY_NAME = "Django Shell-Plus"
+SHELL_PLUS_MODEL_ALIASES = {
+    'musics': {
+        'Author': 'A',
+        'Genre': 'G',
+        'Music': 'M',
+    },
+    'auths': {
+        'CustomUser': 'U',
+    },
+}
 
 # Debug toolbar
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
@@ -43,3 +53,11 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.redirects.RedirectsPanel',
     'debug_toolbar.panels.profiling.ProfilingPanel'
 ]
+
+# Email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = config('EMAIL_HOST', cast=str)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', cast=str)
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', cast=str)
+EMAIL_PORT = 587

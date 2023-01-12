@@ -5,6 +5,7 @@ from musics.models import (
     Music
 )
 
+
 def index(request, *args, **kwargs):
     return render(
         request=request,

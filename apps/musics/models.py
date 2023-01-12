@@ -1,5 +1,5 @@
 from django.db import models
-from auths.models import MyUser
+from auths.models import CustomUser
 from abstracts.models import AbstractModel
 
 
@@ -12,13 +12,13 @@ class Author(AbstractModel):
     )
 
     followers = models.ManyToManyField(
-        to=MyUser,
+        to=CustomUser,
         related_name='followers',
         verbose_name='подписчики'
     )
 
     user = models.ForeignKey(
-        to=MyUser,
+        to=CustomUser,
         on_delete=models.CASCADE,
         verbose_name='пользователь'
     )
