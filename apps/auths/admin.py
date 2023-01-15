@@ -1,7 +1,9 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 from auths.models import CustomUser
 
-class CustomUserAdmin(admin.ModelAdmin):
+
+class CustomUserAdmin(UserAdmin):
     model = CustomUser
 
     fieldsets = (
@@ -9,15 +11,16 @@ class CustomUserAdmin(admin.ModelAdmin):
             "fields": [
                 'email',
                 'first_name',
-                'last_name'
+                'last_name',
                 'password',
             ]
         }),
         ("Permissions", {
             "fields": [
                 'code',
-                'is_superuser',
                 'is_active',
+                'is_staff',
+                'is_superuser',
             ]
         }),
     )
@@ -28,27 +31,40 @@ class CustomUserAdmin(admin.ModelAdmin):
             ),
             'fields': (
                 'email',
-                'first_name',
-                'last_name',
                 'password1',
                 'password2',
-                'is_active'
+                'is_active',
             ),
         }),
     )
+    
     search_fields = (
         'email',
     )
 
+    readonly_fields = (
+        'code',
+        'is_active',
+        'is_staff',
+        'is_superuser',
+    )
+    
+    list_filter = (
+        'email',
+        'first_name',
+        'last_name'
+    )
+
     list_display = (
         'email',
+        'first_name',
+        'last_name',
         'is_active',
         'is_superuser'
     )
 
-    readonly_fields = [
-        'is_active',
-        'code'
-    ]
+    ordering = (
+        'email',
+    )
 
 admin.site.register(CustomUser, CustomUserAdmin)

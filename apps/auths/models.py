@@ -47,15 +47,11 @@ class CustomUserManager(BaseUserManager):
             password=password
         )
         user.is_superuser = True
+        user.is_staff = True
+        user.is_active = True
         user.set_password(password)
         user.save(using=self._db)
         return user
-
-    def create_root(self) -> 'CustomUser':
-        self.create_superuser(
-            email='root@gmail.com',
-            password='root'
-        )
 
 
 class CustomUser(
@@ -89,6 +85,11 @@ class CustomUser(
 
     is_superuser = models.BooleanField(
         verbose_name="является суперпользователем",
+        default=False
+    )
+
+    is_staff = models.BooleanField(
+        verbose_name='является сотрудником',
         default=False
     )
 

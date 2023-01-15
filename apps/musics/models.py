@@ -1,7 +1,39 @@
 from django.db import models
 from auths.models import CustomUser
 from abstracts.models import AbstractModel
+from django.db.models import QuerySet
 
+
+class AuthorManager(models.Manager):
+    def get_author_by_user(
+        self,
+        user: CustomUser
+    ) -> 'Author':
+        result: QuerySet = self.filter(
+            user=user
+        )
+        if result.count() > 0:
+            return result.first()
+    
+    def get_author_by_firstname(
+        self,
+        first_name: str
+    ) -> 'Author':
+        result: QuerySet = self.filter(
+            user__first_name=first_name
+        )
+        if result.count() > 0:
+            return result.first()
+    
+    def get_author_by_lastname(
+        self,
+        last_name: str
+    ) -> 'Author':
+        result: QuerySet = self.filter(
+            user__last_name=last_name
+        )
+        if result.count() > 0:
+            return result.first()
 
 class Author(AbstractModel):
     """User but will push music by 5 dollars."""
@@ -31,7 +63,8 @@ class Author(AbstractModel):
         verbose_name_plural = 'авторы'
 
     def __str__(self) -> str:
-        return self.user.username
+        return (f"{self.user.first_name} "
+            f"{self.user.last_name}")
 
 
 class Genre(AbstractModel):
@@ -54,17 +87,26 @@ class Genre(AbstractModel):
 
 
 class MusicManager(models.Manager):
-    def get_all(self) -> models.QuerySet['Music']:
-        return Music.objects.all()
+    def get_by_status(
+        self,
+        status: int
+    ) -> 'Music':
+        result: QuerySet =  self.filter(
+            status=status
+        )
+        if result.count() > 0:
+            return result.first()
 
+        return None
 
+        
 class Music(AbstractModel):
     """Music model"""
     objects = MusicManager()
 
-    STATUS_PATTERN = [
-        ('BR', 'Предрелиз'),
-        ('R', 'Релиз')
+    STATUSES = [
+        (1, 'Предрелиз'),
+        (2, 'Релиз')
     ]
 
     title = models.CharField(
@@ -72,10 +114,9 @@ class Music(AbstractModel):
         max_length=200
     )
 
-    status = models.CharField(
+    status = models.PositiveSmallIntegerField(
         verbose_name='статус',
-        max_length=3,
-        choices=STATUS_PATTERN
+        choices=STATUSES
     )
 
     duration = models.IntegerField(
