@@ -9,11 +9,21 @@
 </head>
 <body>
     <h1 class="title">Author Page</h1>
-    {% for item in items %}
-    <div class="card">
-        <h2>{{item.user.username}}</h2>
-        <p>{{item.datestart_subscribe}}</p>
-    </div>
-    {% endfor %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <select name="user" id="user">
+            {% for user in ctx_users %}
+                <option value="{{user.email}}">{{user.email}}</option>
+            {% endfor %}    
+        </select>
+        <fieldset>
+            <legend>followers</legend> 
+            {% for user in ctx_users %}
+                <input type="checkbox" name="followers" id="follower_{{user.index}}" value="{{user.email}}">
+                {{user.email}}<br>
+            {% endfor %}  
+        </fieldset>
+        <input type="submit" value='Save'>
+    </form>
 </body>
 </html>
