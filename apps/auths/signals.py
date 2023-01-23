@@ -9,25 +9,27 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 # Local
-from .models import CustomUser
+from .models import MyUser
 
 
 @receiver(
     post_save,
-    sender=CustomUser
+    sender=MyUser
 )
 def post_save_custom_user(
     sender: ModelBase,
-    instance: CustomUser,
+    instance: MyUser,
     created: bool,
     *args: Any,
     **kwargs: Any
 ) -> None:
-    """Подтверждение регистрации пользователя по почте."""
+    """Активация пользователя по почте."""
     if not created:
         return
 
-    link: str = 'http://127.0.0.1:8000/registration/' + instance.code
+    link: str = 'http://127.0.0.1:8000/activate/' + instance.activation_code
+
+    print("Отправка сообщения на почту...", instance.email)
 
     send_mail(
         'Подтверждение регистрации пользователя',
@@ -36,3 +38,4 @@ def post_save_custom_user(
         [ instance.email ],
         fail_silently=False
     )
+

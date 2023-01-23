@@ -5,6 +5,7 @@ import os
 from settings.conf import *
 
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(BASE_DIR)
 sys.path.append(os.path.join(BASE_DIR, 'apps'))
@@ -97,4 +98,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL='auths.CustomUser'
+AUTH_USER_MODEL='auths.MyUser'

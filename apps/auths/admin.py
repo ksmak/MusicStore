@@ -1,70 +1,78 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from auths.models import CustomUser
+from auths.models import MyUser
 
+class MyUserAdmin(admin.ModelAdmin):
+    model = MyUser
 
-class CustomUserAdmin(UserAdmin):
-    model = CustomUser
-
-    fieldsets = (
-        ("Information", {
-            "fields": [
-                'email',
-                'first_name',
-                'last_name',
-                'password',
-            ]
-        }),
-        ("Permissions", {
-            "fields": [
-                'code',
-                'is_active',
-                'is_staff',
-                'is_superuser',
-            ]
-        }),
-    )
     add_fieldsets = (
-        (None, {
-            'classes': (
-                'wide',
+        ('Personal date', {
+            'classes':(
+                'wide'
             ),
             'fields': (
                 'email',
+                'first_name',
+                'last_name',
+                'middle_name',
                 'password1',
-                'password2',
-                'is_active',
-            ),
+                'password2'
+            )
+
         }),
-    )
-    
-    search_fields = (
-        'email',
+        ('Permissions', {
+            'classes': (
+                'wide'
+            ),
+            'fields': (
+                'is_active',
+                'is_superuser',
+                'groups'
+            )
+        })
     )
 
-    readonly_fields = (
-        'code',
-        'is_active',
-        'is_staff',
-        'is_superuser',
-    )
-    
-    list_filter = (
-        'email',
-        'first_name',
-        'last_name'
+    fieldsets = (
+        ('Personal data', {
+            'fields': (
+                'email',
+                'first_name',
+                'last_name',
+                'middle_name',
+                'password',
+            )
+        }),
+        ('Permisions', {
+            'fields': (
+                'is_active',
+                'is_superuser',
+                'groups'
+            )
+        })
     )
 
     list_display = (
         'email',
         'first_name',
         'last_name',
+        'middle_name',
         'is_active',
+        'is_staff',
         'is_superuser'
+    )
+
+    search_fields = (
+        'email',
+        'first_name',
+        'last_name',
+        'middle_name'
     )
 
     ordering = (
         'email',
+        'first_name',
+        'last_name',
+        'middle_name'
     )
 
-admin.site.register(CustomUser, CustomUserAdmin)
+
+admin.site.register(MyUser, MyUserAdmin)

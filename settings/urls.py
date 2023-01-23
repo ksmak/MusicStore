@@ -1,15 +1,16 @@
-from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from apps.musics import views
-from apps.auths import views as auths_views
+from musics import views
+from auths.views import activate_user, register_user
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('registration/<str:code>', auths_views.registration),
+    path('activate/<str:activation_code>', activate_user),
+    path('register/', register_user),
+    path('musics/', include('musics.urls')),
     path('', views.index),
     path('create-author', views.create_author_view),
     path('create-genre', views.create_genre_view),

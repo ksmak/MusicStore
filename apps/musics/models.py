@@ -1,39 +1,8 @@
 from django.db import models
-from auths.models import CustomUser
-from abstracts.models import AbstractModel
 from django.db.models import QuerySet
+from auths.models import MyUser
+from abstracts.models import AbstractModel, AbstractManager, AbstractQuerySet
 
-
-class AuthorManager(models.Manager):
-    def get_author_by_user(
-        self,
-        user: CustomUser
-    ) -> 'Author':
-        result: QuerySet = self.filter(
-            user=user
-        )
-        if result.count() > 0:
-            return result.first()
-    
-    def get_author_by_firstname(
-        self,
-        first_name: str
-    ) -> 'Author':
-        result: QuerySet = self.filter(
-            user__first_name=first_name
-        )
-        if result.count() > 0:
-            return result.first()
-    
-    def get_author_by_lastname(
-        self,
-        last_name: str
-    ) -> 'Author':
-        result: QuerySet = self.filter(
-            user__last_name=last_name
-        )
-        if result.count() > 0:
-            return result.first()
 
 class Author(AbstractModel):
     """User but will push music by 5 dollars."""
@@ -44,13 +13,13 @@ class Author(AbstractModel):
     )
 
     followers = models.ManyToManyField(
-        to=CustomUser,
+        to=MyUser,
         related_name='followers',
         verbose_name='подписчики'
     )
 
     user = models.ForeignKey(
-        to=CustomUser,
+        to=MyUser,
         on_delete=models.CASCADE,
         verbose_name='пользователь'
     )
@@ -63,8 +32,7 @@ class Author(AbstractModel):
         verbose_name_plural = 'авторы'
 
     def __str__(self) -> str:
-        return (f"{self.user.first_name} "
-            f"{self.user.last_name}")
+        return self.user.username
 
 
 class Genre(AbstractModel):
@@ -86,27 +54,23 @@ class Genre(AbstractModel):
         return self.title
 
 
-class MusicManager(models.Manager):
-    def get_by_status(
-        self,
-        status: int
-    ) -> 'Music':
-        result: QuerySet =  self.filter(
-            status=status
-        )
-        if result.count() > 0:
-            return result.first()
-
-        return None
-
+class MusicManager(AbstractManager):
+    def get_music_by_genre(self, title: str) -> QuerySet['Music']:
+        id: int = Genre.objects.get(
+           title=title
+        ).id
         
+        return self.filter(
+            genre=id
+        )
+
 class Music(AbstractModel):
     """Music model"""
     objects = MusicManager()
 
-    STATUSES = [
-        (1, 'Предрелиз'),
-        (2, 'Релиз')
+    STATUS_PATTERN = [
+        ('BR', 'Предрелиз'),
+        ('R', 'Релиз')
     ]
 
     title = models.CharField(
@@ -114,9 +78,10 @@ class Music(AbstractModel):
         max_length=200
     )
 
-    status = models.PositiveSmallIntegerField(
+    status = models.CharField(
         verbose_name='статус',
-        choices=STATUSES
+        max_length=3,
+        choices=STATUS_PATTERN
     )
 
     duration = models.IntegerField(

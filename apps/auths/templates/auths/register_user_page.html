@@ -1,0 +1,23 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'auths/css/style.css' %}">
+</head>
+<body>
+    <div class="title">Регистрация пользователя</div>
+    <div class="register__form">
+        <form action="" method="post">
+            {% csrf_token %}
+            <input type="text" name="email" placeholder="Ваша почта">
+            <input type="text" name="last_name" placeholder="Фамилия">
+            <input type="text" name="first_name" placeholder="Имя">
+            <input type="text" name="middle_name" placeholder="Отчество">
+            <input type="password" name="password" placeholder="Пароль">
+            <input type="submit" value='Сохранить'>
+        </form>
+    </div>
+</body>
+</html>

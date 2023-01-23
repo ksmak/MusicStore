@@ -6,5 +6,6 @@ class AuthsConfig(AppConfig):
     name = 'auths'
 
     def ready(self) -> None:
+        """ Метод для регистрации сигналов """
+        # First party
         import auths.signals
-        return super().ready()

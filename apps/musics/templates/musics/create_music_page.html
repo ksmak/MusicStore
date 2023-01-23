@@ -9,12 +9,23 @@
 </head>
 <body>
     <h1 class="title">Music Page</h1>
-    {% for item in items %}
-    <div class="card">
-        <h2>{{item.title}}</h2>
-        <p>{{item.author.user.username}}</p>
-        <p>{{item.genres}}</p>
-    </div>
-    {% endfor %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <select name="status" id="status">
+            {% for st in ctx_status %}
+                <option value="{{st.0}}">{{st.1}}</option>
+            {% endfor %}    
+        </select>
+        <input type="text" name="title" placeholder="Title">
+        <input type="number" name="duration" id="duration" placeholder="Duration">
+        <fieldset>
+            <legend>genres</legend> 
+            {% for gr in ctx_genres %}
+                <input type="checkbox" name="genre" id="genre_{{gr.id}}" value="{{gr.id}}">
+                {{gr.title}}<br>
+            {% endfor %}  
+        </fieldset>
+        <input type="submit" value='Save'>
+    </form>    
 </body>
 </html>
