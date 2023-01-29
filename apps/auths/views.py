@@ -5,8 +5,44 @@ from django.http import (
     HttpResponse,
     HttpResponseRedirect
 )
+from django.views import View
 # Project modules
 from .models import MyUser
+from abstracts.mixins import HttpResponseMixin
+from .forms import UserForm
+
+
+class UserView(HttpResponseMixin, View):
+    """ UserView """
+    form = UserForm
+
+    def get(
+        self,
+        request: HttpRequest,
+        *args: tuple,
+        **kwargs: list
+    ) -> HttpResponse:
+        
+        return self.get_http_response(
+            request=request,
+            template_name='auths/registration_form.html',
+            context={
+            'ctx_form': self.form()
+        }
+        )
+        
+    
+    def post(
+        self,
+        request: HttpRequest,
+        *args: tuple,
+        **kwargs: list
+    ) -> HttpResponse:
+        form: UserForm = self.form(
+            self.request or None
+        )
+        breakpoint()
+        return HttpResponse("Ok")
 
 
 def activate_user(request: HttpRequest, activation_code: str):

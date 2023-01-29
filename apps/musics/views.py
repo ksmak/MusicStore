@@ -9,17 +9,23 @@ from musics.models import (
     Music
 )
 from auths.models import MyUser
+from abstracts.mixins import HttpResponseMixin
+from .forms import (
+    MusicForm,
+    TempForm
+)
 
 def index(request, *args, **kwargs):
     return render(
         request=request,
-        template_name='musics/home_page.html',
-        context={}
+        template_name='musics/home_page.html'
     )
 
 
 class MusicView(View):
     """ View special for Music model """
+
+    form = MusicForm
 
     def get(
         self,
@@ -34,7 +40,8 @@ class MusicView(View):
             template_name='musics/create_music_page.html',
             context={
                 'ctx_status': status,
-                'ctx_genres': genres
+                'ctx_genres': genres,
+                'ctx_form': self.form()
             }
         )
 
@@ -44,23 +51,31 @@ class MusicView(View):
         *args: tuple,
         **kwargs: list
     ) -> HttpResponse:
-        status = request.POST.get('status')
-        title = request.POST.get('title')
-        duration = request.POST.get('duration', 0)
-        genre_ids = request.POST.getlist('genre')
+        data: MusicForm = self.form(self.request.POST)
 
-        author = Author.objects.get(id=request.user.id)
+        if not data.is_valid():
+            return HttpResponse("BAD")
         
-        music = Music.objects.create(
-            status=status,
-            title=title,
-            duration=duration,
-            author=author
-        )
+        print(data.cleaned_data)
+        data.save()
 
-        if genre_ids:
-            genres = Genre.objects.filter(id__in=genre_ids)
-            music.genre.set(genres)
+        # status = request.POST.get('status')
+        # title = request.POST.get('title')
+        # duration = request.POST.get('duration', 0)
+        # genre_ids = request.POST.getlist('genre')
+
+        # author = Author.objects.get(id=request.user.id)
+        
+        # music = Music.objects.create(
+        #     status=status,
+        #     title=title,
+        #     duration=duration,
+        #     author=author
+        # )
+
+        # if genre_ids:
+        #     genres = Genre.objects.filter(id__in=genre_ids)
+        #     music.genre.set(genres)
 
 
         return HttpResponse("success")
@@ -132,3 +147,39 @@ class GenreView(View):
         )
        
         return HttpResponse("success")
+
+
+class TempView(HttpResponseMixin, View):
+    """ Temp
+    Just delete later
+    """
+
+    form = TempForm
+
+    def get(
+        self,
+        request: HttpRequest,
+        *args: tuple,
+        **kwargs: list
+    ) -> HttpResponse:
+        
+        return self.get_http_response(
+            request=request,
+            template_name='musics/temp_page.html',
+            context={
+            'ctx_form': self.form()
+        }
+        )
+        
+    
+    def post(
+        self,
+        request: HttpRequest,
+        *args: tuple,
+        **kwargs: list
+    ) -> HttpResponse:
+        form: TempForm = self.form(
+            self.request or None
+        )
+        breakpoint()
+        return HttpResponse("Ok")

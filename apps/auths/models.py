@@ -7,6 +7,8 @@ from django.contrib.auth.models import (
     BaseUserManager
 )
 from django.db import models
+# Local
+from abstracts.models import AbstractModel
 
 
 class MyUserManager(BaseUserManager):
@@ -30,12 +32,13 @@ class MyUserManager(BaseUserManager):
             email=email,
             password=password
         )
+        user.is_active = True
         user.is_superuser = True
         user.save(using=self._db)
         return user
 
 
-class MyUser(AbstractBaseUser, PermissionsMixin):
+class MyUser(AbstractBaseUser, PermissionsMixin, AbstractModel):
     """ Custom user model """
 
     MAX_ACTIVATION_CODE_SIZE = 32
@@ -93,6 +96,9 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []
 
     objects = MyUserManager()
+
+    def __str__(self) -> str:
+        return f'{self.email}'
 
     @property
     def is_staff(self):

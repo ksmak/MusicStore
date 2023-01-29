@@ -31,11 +31,11 @@ def post_save_custom_user(
 
     print("Отправка сообщения на почту...", instance.email)
 
-    send_mail(
-        'Подтверждение регистрации пользователя',
-        f'Для подтверждения регистрации перейдите по следующей ссылке {link}',
-        settings.EMAIL_HOST_USER,
-        [ instance.email ],
-        fail_silently=False
-    )
+    # send_mail(
+    #     'Подтверждение регистрации пользователя',
+    #     f'Для подтверждения регистрации перейдите по следующей ссылке {link}',
+    #     settings.EMAIL_HOST_USER,
+    #     [ instance.email ],
+    #     fail_silently=False
+    # )
 

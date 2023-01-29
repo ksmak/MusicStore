@@ -11,21 +11,8 @@
     <h1 class="title">Music Page</h1>
     <form action="" method="post">
         {% csrf_token %}
-        <select name="status" id="status">
-            {% for st in ctx_status %}
-                <option value="{{st.0}}">{{st.1}}</option>
-            {% endfor %}    
-        </select>
-        <input type="text" name="title" placeholder="Title">
-        <input type="number" name="duration" id="duration" placeholder="Duration">
-        <fieldset>
-            <legend>genres</legend> 
-            {% for gr in ctx_genres %}
-                <input type="checkbox" name="genre" id="genre_{{gr.id}}" value="{{gr.id}}">
-                {{gr.title}}<br>
-            {% endfor %}  
-        </fieldset>
-        <input type="submit" value='Save'>
+        {{ ctx_form.as_p }}
+        <input type="submit" value=">>>">
     </form>    
 </body>
 </html>

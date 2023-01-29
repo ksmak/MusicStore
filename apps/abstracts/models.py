@@ -5,10 +5,10 @@ from django.db.models import QuerySet
 class AbstractQuerySet(models.QuerySet):
     """ Pre-setup QuerySet for AbstractManager """
 
-    def delete(self, *args, **kwargs):
-        self.update(
-            datetime_deleted = timezone.now()
-        )
+    # def delete(self, *args, **kwargs):
+    #     self.update(
+    #         datetime_deleted = timezone.now()
+    #     )
 
 class AbstractManager(models.Manager):
     """ Manager for AbstractModel class """

@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import QuerySet
+from django.utils import timezone
 from auths.models import MyUser
 from abstracts.models import AbstractModel, AbstractManager, AbstractQuerySet
 
@@ -31,8 +32,8 @@ class Author(AbstractModel):
         verbose_name = 'автор'
         verbose_name_plural = 'авторы'
 
-    def __str__(self) -> str:
-        return self.user.username
+    # def __str__(self) -> str:
+    #     return {self.user}
 
 
 class Genre(AbstractModel):
@@ -84,9 +85,9 @@ class Music(AbstractModel):
         choices=STATUS_PATTERN
     )
 
-    duration = models.IntegerField(
+    duration = models.TimeField(
         verbose_name='продолжительность',
-        default=0
+        default=timezone.now
     )
 
     author = models.ForeignKey(
