@@ -2,13 +2,16 @@
 from typing import Any, Optional
 import datetime
 import random
+
 # Django modules
 from django.core.management.base import BaseCommand
+
 # Third part modules
 import requests
 from requests import Response
 from bs4 import BeautifulSoup
 import names
+
 # Project modules
 from musics.models import Author, Music, Genre
 from auths.models import MyUser

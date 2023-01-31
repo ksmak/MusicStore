@@ -2,6 +2,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views import View
 from django.db.models import QuerySet
+
 # Project modules
 from musics.models import (
     Author,
@@ -11,8 +12,7 @@ from musics.models import (
 from auths.models import MyUser
 from abstracts.mixins import HttpResponseMixin
 from .forms import (
-    MusicForm,
-    TempForm
+    MusicForm
 )
 
 def index(request, *args, **kwargs):
@@ -22,7 +22,7 @@ def index(request, *args, **kwargs):
     )
 
 
-class MusicView(View):
+class MusicView(View, HttpResponseMixin):
     """ View special for Music model """
 
     form = MusicForm
@@ -35,7 +35,7 @@ class MusicView(View):
     ) -> HttpResponse:
         status: list[tuple(str, str)] = Music.STATUS_PATTERN
         genres: QuerySet[Genre] = Genre.objects.all()
-        return render(
+        return self.get_http_response(
             request=request,
             template_name='musics/create_music_page.html',
             context={
@@ -51,32 +51,15 @@ class MusicView(View):
         *args: tuple,
         **kwargs: list
     ) -> HttpResponse:
-        data: MusicForm = self.form(self.request.POST)
+        data: MusicForm = self.form(
+            self.request.POST,
+            self.request.FILES
+        )
 
         if not data.is_valid():
             return HttpResponse("BAD")
         
-        print(data.cleaned_data)
         data.save()
-
-        # status = request.POST.get('status')
-        # title = request.POST.get('title')
-        # duration = request.POST.get('duration', 0)
-        # genre_ids = request.POST.getlist('genre')
-
-        # author = Author.objects.get(id=request.user.id)
-        
-        # music = Music.objects.create(
-        #     status=status,
-        #     title=title,
-        #     duration=duration,
-        #     author=author
-        # )
-
-        # if genre_ids:
-        #     genres = Genre.objects.filter(id__in=genre_ids)
-        #     music.genre.set(genres)
-
 
         return HttpResponse("success")
 
@@ -147,39 +130,3 @@ class GenreView(View):
         )
        
         return HttpResponse("success")
-
-
-class TempView(HttpResponseMixin, View):
-    """ Temp
-    Just delete later
-    """
-
-    form = TempForm
-
-    def get(
-        self,
-        request: HttpRequest,
-        *args: tuple,
-        **kwargs: list
-    ) -> HttpResponse:
-        
-        return self.get_http_response(
-            request=request,
-            template_name='musics/temp_page.html',
-            context={
-            'ctx_form': self.form()
-        }
-        )
-        
-    
-    def post(
-        self,
-        request: HttpRequest,
-        *args: tuple,
-        **kwargs: list
-    ) -> HttpResponse:
-        form: TempForm = self.form(
-            self.request or None
-        )
-        breakpoint()
-        return HttpResponse("Ok")

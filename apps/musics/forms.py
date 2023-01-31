@@ -1,5 +1,7 @@
+# Django modules
 from django import forms
-# Local
+
+# Project modules
 from .models import Music
 
 
@@ -14,25 +16,3 @@ class MusicForm(forms.ModelForm):
                 attrs={'type': 'time'}
             )
         }
-
-
-class TempForm(forms.Form):
-    """ Music form """
-
-    title = forms.CharField(
-        max_length=100,
-        label='Заголовок'
-    )
-    duration = forms.TimeField(
-        required=True,
-        label='Длительность',
-        widget=forms.TimeInput(
-            attrs={
-                'type': 'time'
-            }
-        )
-    )
-    description = forms.CharField(
-        widget=forms.Textarea,
-        label='Описание'
-    )

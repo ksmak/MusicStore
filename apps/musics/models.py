@@ -1,13 +1,15 @@
+# Django modules
 from django.db import models
 from django.db.models import QuerySet
 from django.utils import timezone
+
+# Project modules
 from auths.models import MyUser
 from abstracts.models import AbstractModel, AbstractManager, AbstractQuerySet
 
 
 class Author(AbstractModel):
     """User but will push music by 5 dollars."""
-
     datestart_subscribe = models.DateField(
         verbose_name='начало подписки',
         auto_now_add=True
@@ -32,13 +34,12 @@ class Author(AbstractModel):
         verbose_name = 'автор'
         verbose_name_plural = 'авторы'
 
-    # def __str__(self) -> str:
-    #     return {self.user}
+    def __str__(self) -> str:
+        return f'{self.user.first_name} {self.user.last_name}'
 
 
 class Genre(AbstractModel):
     """Music genre"""
-
     title = models.CharField(
         verbose_name='наименование',
         max_length=200
@@ -102,6 +103,13 @@ class Music(AbstractModel):
         verbose_name='жанр'
     )
 
+    avatar = models.ImageField(
+        verbose_name='автарка',
+        upload_to='upload',
+        null=True,
+        blank=True
+    )
+    
     class Meta:
         ordering = (
             'title',

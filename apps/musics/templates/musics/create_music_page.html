@@ -9,7 +9,7 @@
 </head>
 <body>
     <h1 class="title">Music Page</h1>
-    <form action="" method="post">
+    <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ ctx_form.as_p }}
         <input type="submit" value=">>>">
