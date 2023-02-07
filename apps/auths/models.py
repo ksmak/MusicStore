@@ -71,7 +71,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin, AbstractModel):
 
     is_active = models.BooleanField(
         verbose_name='активность',
-        default=False
+        default=True
     )
 
     is_superuser = models.BooleanField(

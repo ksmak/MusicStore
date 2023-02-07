@@ -17,7 +17,7 @@ class HttpResponseMixin:
         template_name: str,
         context: dict = {}
     ) -> HttpResponse:
-        context['ctx_title'] = 'Music store'
+        # context['ctx_title'] = 'Music store'
         
         template: Template =\
             loader.get_template(

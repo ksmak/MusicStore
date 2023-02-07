@@ -7,11 +7,14 @@
     <link rel="stylesheet" href="{% static 'musics/css/style.css' %}">
 </head>
 <body>
-    <div class="title">Регистрация пользователя</div>
+    <div class="title">{{ ctx_title }}</div>
     <form action="" method="post">
     {% csrf_token %}
     {{ ctx_form.as_p }}
-    <input type="submit" value="Зарегистрироваться">
+    <div>
+        {{ ctx_form_error }}
+    </div>
+    <input type="submit" value=">>>">
     </form>
 </body>
 </html>

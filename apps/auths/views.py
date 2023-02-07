@@ -6,29 +6,36 @@ from django.http import (
     HttpResponseRedirect
 )
 from django.views import View
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth import login, authenticate
+
 # Project modules
 from .models import MyUser
 from abstracts.mixins import HttpResponseMixin
-from .forms import UserForm
+from .forms import (
+    UserForm,
+    UserRegisterForm,
+    UserLoginForm
+)
 
 
-class UserView(HttpResponseMixin, View):
-    """ UserView """
-    form = UserForm
-
+class UserRegistrationView(HttpResponseMixin, View):
+    """View for registration user."""
     def get(
         self,
         request: HttpRequest,
         *args: tuple,
         **kwargs: list
     ) -> HttpResponse:
-        
+        form = UserRegisterForm()
+
         return self.get_http_response(
             request=request,
-            template_name='auths/registration_form.html',
+            template_name='auths/user_form.html',
             context={
-            'ctx_form': self.form()
-        }
+                'ctx_title': 'Регистрация',
+                'ctx_form': form
+            }
         )
         
     
@@ -38,11 +45,91 @@ class UserView(HttpResponseMixin, View):
         *args: tuple,
         **kwargs: list
     ) -> HttpResponse:
-        form: UserForm = self.form(
-            self.request or None
+        form = UserRegisterForm(
+            self.request.POST
         )
-        breakpoint()
-        return HttpResponse("Ok")
+        
+        if form.is_valid():
+            user: MyUser = form.save(
+                commit=False
+            )
+
+            user.password = make_password(
+                user.password
+            )
+
+            user.save()
+
+            login(request=request, user=user)
+
+            return HttpResponseRedirect("/")
+
+        return self.get_http_response(
+            request=request,
+            template_name='auths/user_form.html',
+            context={
+                'ctx_title': 'Регистрация',
+                'ctx_form': form
+            }
+        )
+
+
+class UserLoginView(HttpResponseMixin, View):
+    """View for login user."""
+    
+    def get(
+        self,
+        request: HttpRequest,
+        *args: tuple,
+        **kwargs: list
+    ) -> HttpResponse:
+        form: UserLoginForm = UserLoginForm()
+
+        return self.get_http_response(
+            request=request,
+            template_name='auths/user_form.html',
+            context={
+                'ctx_title': 'Вход в систему',
+                'ctx_form': form
+            }
+        )
+        
+    
+    def post(
+        self,
+        request: HttpRequest,
+        *args: tuple,
+        **kwargs: list
+    ) -> HttpResponse:
+        form: UserLoginForm = UserLoginForm(
+            self.request.POST
+        )
+
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+        
+            user = authenticate(
+                request=request,
+                username=email,
+                password=password
+            )
+
+            if user:
+                login(request=request, user=user)
+
+                return HttpResponseRedirect("/")
+
+        return self.get_http_response(
+            request=request,
+            template_name='auths/user_form.html',
+            context={
+                'ctx_title': 'Вход в систему',
+                'ctx_form': form,
+                'ctx_form_error': 'Ошибка! Логин или пароль не верны!'
+            }
+        )
+
 
 
 def activate_user(request: HttpRequest, activation_code: str):
@@ -54,23 +141,3 @@ def activate_user(request: HttpRequest, activation_code: str):
             return HttpResponse('Пользователь успешно активирован!')
     
     return HttpResponse('Ошибка активации!')
-
-
-def register_user(request: HttpRequest):
-    if request.method == 'POST':
-        user = MyUser()
-        user.email = request.POST.get('email')
-        user.first_name = request.POST.get('first_name')
-        user.last_name = request.POST.get('last_name')
-        user.middle_name = request.POST.get('middle_name')
-        user.set_password(request.POST.get('password'))
-        user.save()
-
-        return HttpResponseRedirect('/')
-    
-
-    return render(
-        request=request,
-        template_name='auths/register_user_page.html',
-        context={}
-    )
