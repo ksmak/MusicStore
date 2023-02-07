@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'auths/css/style.css' %}">
+    <title>User profiles</title>
+</head>
+<body>
+    <h1>{{ ctx_title }}</h1>
+    <div class="content">
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ ctx_form.as_p }}
+            <input type="submit" value="Сохранить">
+        </form>
+        <hr>
+        <br>
+        <table>
+            <thead>
+                <tr>
+                    <th>Почта</th>
+                    <th>Фамилия</th>
+                    <th>Имя</th>
+                    <th>Отчество</th>
+                    <th>активность</th>
+                    <th>яв-ся администратором</th>
+                    <th>дата последнего входа</th>
+                    <th>#</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in ctx_users %}
+                <tr>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.last_name }}</td>
+                    <td>{{ user.first_name }}</td>
+                    <td>{{ user.middle_name }}</td>
+                    <td>{{ user.is_active }}</td>
+                    <td>{{ user.is_superuser }}</td>
+                    <td>{{ user.date_joined }}</td>
+                    <td><a href="/profile/?user_email={{user.email}}">Редактировать</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+   </div> 
+</body>
+</html>

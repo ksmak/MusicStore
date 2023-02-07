@@ -12,8 +12,14 @@ class UserForm(forms.ModelForm):
 
     class Meta:
         model = MyUser
-        fields = '__all__'
-        exclude = ['username']
+        fields = (
+            'email',
+            'first_name',
+            'last_name',
+            'middle_name',
+            'is_active',
+            'is_superuser'
+        )
 
 
 class UserRegisterForm(forms.ModelForm):

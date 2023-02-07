@@ -9,6 +9,7 @@ from auths.views import (
     activate_user,
     UserRegistrationView,
     UserLoginView,
+    UserProfileView,
 )
 from musics.views import index
 
@@ -16,6 +17,7 @@ from musics.views import index
 urlpatterns = [
     path('register/', UserRegistrationView.as_view()),
     path('login/', UserLoginView.as_view()),
+    path('profile/', UserProfileView.as_view()),
     path('admin/', admin.site.urls),
     path('activate/<str:activation_code>', activate_user),
     path('', include('musics.urls')),

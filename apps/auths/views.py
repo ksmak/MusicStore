@@ -19,6 +19,69 @@ from .forms import (
 )
 
 
+class UserProfileView(HttpResponseMixin, View):
+    """View for edit user profile."""
+
+    def get(
+        self,
+        request: HttpRequest,
+        *args: tuple,
+        **kwargs: list
+    ) -> HttpResponse:
+        users = MyUser.objects.all()
+        
+        form = UserForm()
+
+        email = request.GET.get('user_email')
+
+        if email:
+            user = MyUser.objects.filter(email=email).first()
+
+            if user:
+                form = UserForm(
+                    instance=user
+                )
+
+        return self.get_http_response(
+            request=request,
+            template_name='auths/user_profile.html',
+            context={
+                'ctx_title': 'Пользователи',
+                'ctx_form': form,
+                'ctx_users': users
+            }
+        )
+        
+    
+    def post(
+        self,
+        request: HttpRequest,
+        *args: tuple,
+        **kwargs: list
+    ) -> HttpResponse:
+        email = request.POST.get('email')
+
+        if email:
+            user = MyUser.objects.get(email=email)
+
+            form = UserForm(
+                self.request.POST, instance=user
+            )
+                
+            form.save()
+
+            return HttpResponseRedirect("/profile/")
+
+        return self.get_http_response(
+            request=request,
+            template_name='auths/user_profile.html',
+            context={
+                'ctx_title': 'Пользователи',
+                'ctx_form': form
+            }
+        )
+
+
 class UserRegistrationView(HttpResponseMixin, View):
     """View for registration user."""
     def get(
