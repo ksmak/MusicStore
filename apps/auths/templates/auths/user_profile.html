@@ -5,48 +5,29 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'auths/css/style.css' %}">
+    <link rel="stylesheet" href="{% static '/css/style.css' %}">
     <title>User profiles</title>
 </head>
 <body>
-    <h1>{{ ctx_title }}</h1>
     <div class="content">
-        <form action="" method="post">
-            {% csrf_token %}
-            {{ ctx_form.as_p }}
-            <input type="submit" value="Сохранить">
-        </form>
-        <hr>
-        <br>
-        <table>
-            <thead>
-                <tr>
-                    <th>Почта</th>
-                    <th>Фамилия</th>
-                    <th>Имя</th>
-                    <th>Отчество</th>
-                    <th>активность</th>
-                    <th>яв-ся администратором</th>
-                    <th>дата последнего входа</th>
-                    <th>#</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for user in ctx_users %}
-                <tr>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.last_name }}</td>
-                    <td>{{ user.first_name }}</td>
-                    <td>{{ user.middle_name }}</td>
-                    <td>{{ user.is_active }}</td>
-                    <td>{{ user.is_superuser }}</td>
-                    <td>{{ user.date_joined }}</td>
-                    <td><a href="/profile/?user_email={{user.email}}">Редактировать</a></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
+        <h1>Профиль пользователя</h1>
+        <div class="profile__panel">
+            <div class="profile__data">
+                <div class="profile__row">Фамилия: <span>{{ctx_user.last_name|default_if_none:""}}</span></div>
+                <div class="profile__row">Имя: <span>{{ctx_user.first_name|default_if_none:""}}</span></div>
+                <div class="profile__row">Отчество: <span>{{ctx_user.middle_name|default_if_none:""}}</span></div>
+                <div class="profile__row">Активный пользователь: <span>{{ctx_user.is_active|yesno:"да, нет"}}</span></div>
+                <div class="profile__row">Является администратором: <span>{{ctx_user.is_superuser|yesno:"да, нет"}}</span></div>
+            </div>
+            <div class="profile__photo">
+                <img href="#">
+            </div>
+        </div>
+        <div class="profile__buttons">
+            <a class="button" href="/auths/edit/">Изменить</a>
+            <a class="button" href="/auths/change-password/">Сменить пароль</a>
+            <a class="button" href="/">Закрыть</a>
+        </div>
    </div> 
 </body>
 </html>

@@ -4,10 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="{% static 'musics/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-
-    <div class="title">HOME PAGE</div>
+    <div class="content">
+        <header>
+            <div class="logo">
+                <span>🎵 Spotify</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Главная</a></li>
+                    {% if ctx_user.email %}
+                        <li><a href="/auths/profile/">Профиль</a></li>
+                        <li><a href="/auths/logout/">Выход</a></li>
+                    {% else %}
+                        <li><a href="/auths/register/">Регистрация</a></li>
+                        <li><a href="/auths/">Вход</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </header>
+        <header>
+            <div class="user_info">
+                <span>{{ ctx_user }}</span>
+            </div>
+        </header>
+        <h1>{{ ctx_title }}</h1>
+        <main>
+        </main>
+    </div>
 </body>
 </html>

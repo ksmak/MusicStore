@@ -15,11 +15,23 @@ from .forms import (
     MusicForm
 )
 
-def index(request, *args, **kwargs):
-    return render(
-        request=request,
-        template_name='musics/home_page.html'
-    )
+
+class MainView(HttpResponseMixin, View):
+    """Main page view."""
+    template_name = "musics/home_page.html"
+
+    context = {
+        'ctx_title': "Главная страница",
+    }
+
+    def get(
+        self,
+        request: HttpRequest,
+        *args: tuple,
+        **kwargs: list
+    ) -> HttpResponse:
+        self.context['ctx_user'] = request.user
+        return self.get_http_response(request)
 
 
 class MusicView(View, HttpResponseMixin):

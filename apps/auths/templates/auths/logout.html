@@ -9,12 +9,10 @@
 <body>
     <div class="content">
         <h1>{{ ctx_title }}</h1>
-        <form action="" method="post">
-            {% csrf_token %}
-            {{ ctx_form.as_div }}
-            <input type="submit" value="{{ ctx_btn_title }}" class="button">
-            <button class="button" onclick="window.history.go(-1)">Отмена</button>
-        </form>
+        <div class="logout__info">
+            <p>Вы вышли из сайта</p>
+            <a href="/auths/">Войти снова</a>
+        </div>
     </div>
 </body>
 </html>

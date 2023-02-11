@@ -1,25 +1,13 @@
+# Python
+from typing import Any
+
 # Django 
 from django import forms
 from django.core.exceptions import ValidationError
-from django.contrib.auth import authenticate
+from django.contrib.auth.hashers import make_password
 
 # Local
 from .models import MyUser
-
-
-class UserForm(forms.ModelForm):
-    """ User form """
-
-    class Meta:
-        model = MyUser
-        fields = (
-            'email',
-            'first_name',
-            'last_name',
-            'middle_name',
-            'is_active',
-            'is_superuser'
-        )
 
 
 class UserRegisterForm(forms.ModelForm):
@@ -30,13 +18,13 @@ class UserRegisterForm(forms.ModelForm):
         'outlook.com'
     )
 
-    ERROR_EMAIL_INVALID = "Client's email is invalid"
-    ERROR_EMAIL_TOO_LONG = "Client's email is too long"
-    ERROR_EMAIL_TOO_SHORT = "Client's email is too short"
-    ERROR_PASSWORD_INVALID = 'Password is invalid'
-    ERROR_PASSWORD_TOO_LONG = "Password is too long"
-    ERROR_PASSWORD_TOO_SHORT = "Password is too short"
-    ERROR_PASSWORD_NOT_SAME = "Passwords is not same"
+    ERROR_EMAIL_INVALID = "Некорректный формат почты."
+    ERROR_EMAIL_TOO_LONG = "Название почты слишком длинное."
+    ERROR_EMAIL_TOO_SHORT = "Название почты слишком короткое."
+    ERROR_PASSWORD_INVALID = "Некорректный формат пароля."
+    ERROR_PASSWORD_TOO_LONG = "Пароль слишком длинный."
+    ERROR_PASSWORD_TOO_SHORT = "Пароль слишком короткий."
+    ERROR_PASSWORD_NOT_SAME = "Пароли не совпадают."
 
     EMAIL_MIN_LENGTH = 10
     EMAIL_MAX_LENGTH = 50
@@ -49,15 +37,22 @@ class UserRegisterForm(forms.ModelForm):
     ALPHABET = "abcdefghijklmnopqrstvwxyz"
     
     email = forms.EmailField(
-        label='Почта'
+        label='Почта',
+        widget=forms.EmailInput(
+            attrs={'class': 'form-control'}
+        )
     )
     password = forms.CharField(
-        widget=forms.PasswordInput,
+        widget=forms.PasswordInput(
+            attrs={'class': 'form-control'}
+        ),
         label='Пароль'
     )
 
     password2 = forms.CharField(
-        widget=forms.PasswordInput,
+        widget=forms.PasswordInput(
+            attrs={'class': 'form-control'}
+        ),
         label='Повторите пароль'
     )
 
@@ -74,9 +69,6 @@ class UserRegisterForm(forms.ModelForm):
         email: str = self.cleaned_data['email']
         password: str = self.cleaned_data['password']
         password2: str = self.cleaned_data['password2']
-
-        password = password.lower()
-        password2 = password2.lower()
 
         # 0
         if password != password2:
@@ -134,15 +126,50 @@ class UserRegisterForm(forms.ModelForm):
         if not (is_digit and is_symbol and is_alphabet):
             raise ValidationError(self.ERROR_PASSWORD_INVALID)
 
+    def save(self, commit: bool = ...) -> Any:
+        
+        if commit:
+            user = super().save(commit=False)
+            user.password = make_password(user.password)
+            user.save()
+            return user
+
+        return super().save(commit)
+
+
+class UserForm(forms.ModelForm):
+    """ User form """
+
+    class Meta:
+        model = MyUser
+        
+        fields = (
+            'last_name',
+            'first_name',
+            'middle_name',
+        )
+
+        widgets = {
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'middle_name': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
 
 class UserLoginForm(forms.Form):
     """User login form."""
     email = forms.EmailField(
+        widget=forms.EmailInput(
+            attrs={'class': 'form-control'}
+        ),
         label='Почта'
     )
     
     password = forms.CharField(
-        widget=forms.PasswordInput,
+        widget=forms.PasswordInput(
+            attrs={'class': 'form-control'}
+        ),
         label='Пароль'
     )
 
@@ -151,4 +178,37 @@ class UserLoginForm(forms.Form):
         fields = (
             'email',
             'password',
-        )        
+        )   
+
+
+class ChangePasswordForm(forms.ModelForm):
+    password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={'class': 'form-control'}
+        ),
+        label='Пароль'
+    )
+
+    password2 = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={'class': 'form-control'}
+        ),
+        label='Повторите пароль'
+    )
+
+    class Meta:
+        model = MyUser
+        fields = (
+            'password',
+            'password2',
+        )  
+
+    def clean(self) -> None:
+        super().clean()
+
+        password: str = self.cleaned_data['password']
+        password2: str = self.cleaned_data['password2']
+
+        if password != password2:
+            raise ValidationError('Пароли не совпадают!')
+
